@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Six-Shooter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Rye&family=IM+Fell+English:ital@0;1&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div class="hud">
+    <div id="score">BOUNTY: 0</div>
+    <div id="status">Saddle up...</div>
+  </div>
+
+  <!-- Calibration / test prompts -->
+  <div id="coach" class="hidden">
+    <div id="coach-title"></div>
+    <div id="coach-text"></div>
+    <div id="coach-big"></div>
+  </div>
+
+  <button id="menu-btn" title="Settings (M / Esc)" aria-label="Settings (M or Esc)" aria-haspopup="dialog">SETTINGS</button>
+
+  <div id="debug-panel" class="hidden">
+    <div class="debug-title">HAND SENSOR</div>
+    <div class="debug-row"><span>press depth</span><span id="dbg-depth">—</span></div>
+    <div class="debug-row"><span>thumb fold</span><span id="dbg-thumb-fold">—</span></div>
+    <div class="debug-row"><span>thumb angle</span><span id="dbg-thumb-angle">—</span></div>
+    <div class="debug-row"><span>index ext</span><span id="dbg-index">—</span></div>
+    <div class="debug-row"><span>pose</span><span id="dbg-pose">—</span></div>
+    <div class="debug-row"><span>trigger</span><span id="dbg-trigger">—</span></div>
+    <div class="debug-row"><span>calibrated</span><span id="dbg-calib">—</span></div>
+    <div class="debug-row"><span>aim</span><span id="dbg-aim">—</span></div>
+    <div class="debug-row"><span>log</span><span id="dbg-log">—</span></div>
+  </div>
+
+  <div class="webcam-wrapper">
+    <video id="webcam" autoplay muted playsinline></video>
+    <canvas id="webcam-overlay"></canvas>
+    <div class="webcam-label">DEPUTY</div>
+  </div>
+
+  <div id="start-overlay">
+    <div class="start-card">
+      <h1>SIX-SHOOTER</h1>
+      <p class="tagline">A duel with the dancing tin cans of the dusty West</p>
+      <p class="instructions">
+        Make a pistol with your hand &mdash;<br />
+        index finger out, thumb cocked up.<br />
+        <strong>Press your thumb down to fire.</strong>
+      </p>
+      <button id="start-btn">DRAW</button>
+    </div>
+  </div>
+
+  <div id="menu-overlay" class="hidden" role="dialog" aria-modal="true" aria-labelledby="menu-title">
+    <div class="menu-card">
+      <h2 id="menu-title">SETTINGS</h2>
+
+      <div class="menu-row">
+        <div class="menu-row-label">Aim Control</div>
+        <div class="menu-radio-group">
+          <label><input type="radio" name="aim-control" value="position" /> Hand Position</label>
+          <label><input type="radio" name="aim-control" value="direction" /> Finger Direction</label>
+        </div>
+      </div>
+
+      <div class="menu-row">
+        <div class="menu-row-label">
+          <span>Aim Range (hand travel)</span>
+          <span class="value-display" id="range-value">15%</span>
+        </div>
+        <input type="range" id="aim-range" min="6" max="35" step="1" />
+      </div>
+
+      <div class="menu-row">
+        <div class="menu-row-label">Aim Assist</div>
+        <div class="menu-radio-group">
+          <label><input type="radio" name="aim-mode" value="snap" /> Hard Snap</label>
+          <label><input type="radio" name="aim-mode" value="pull" /> Soft Pull</label>
+          <label><input type="radio" name="aim-mode" value="off" /> Off</label>
+        </div>
+      </div>
+
+      <div class="menu-row">
+        <div class="menu-row-label">
+          <span>Snap / Pull Radius</span>
+          <span class="value-display" id="radius-value">110</span>
+        </div>
+        <input type="range" id="snap-radius" min="40" max="220" step="5" />
+      </div>
+
+      <div class="menu-row">
+        <div class="menu-row-label">
+          <span>Trigger Sensitivity</span>
+          <span class="value-display" id="trigger-value">50%</span>
+        </div>
+        <input type="range" id="trigger-sensitivity" min="0" max="100" step="5" />
+      </div>
+
+      <div class="menu-row">
+        <div class="menu-row-label">
+          <span>Tin Cans on Screen</span>
+          <span class="value-display" id="count-value">6</span>
+        </div>
+        <input type="range" id="target-count" min="2" max="14" step="1" />
+      </div>
+
+      <div class="menu-row">
+        <div class="menu-row-label">
+          <span>Target Speed</span>
+          <span class="value-display" id="speed-value">1.00&times;</span>
+        </div>
+        <input type="range" id="target-speed" min="50" max="200" step="5" />
+      </div>
+
+      <div class="menu-row">
+        <div class="menu-row-label">
+          <span>Volume</span>
+          <span class="value-display" id="volume-value">70%</span>
+        </div>
+        <input type="range" id="audio-volume" min="0" max="100" step="5" />
+      </div>
+
+      <div class="menu-row">
+        <label class="checkbox-row">
+          <input type="checkbox" id="debug-toggle" />
+          <span>Show Hand Sensor Readout</span>
+        </label>
+      </div>
+
+      <div class="menu-actions">
+        <button id="menu-calibrate" class="secondary">Calibrate (C)</button>
+        <button id="menu-test" class="secondary">Trigger Test (T)</button>
+      </div>
+      <div class="menu-actions">
+        <button id="menu-reset" class="secondary">Reset Defaults</button>
+        <button id="menu-close">Resume</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="main.js"></script>
+</body>
+</html>

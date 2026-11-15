@@ -1,0 +1,533 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #2b1d10;
+  color: #f4ead4;
+  font-family: "IM Fell English", "Georgia", serif;
+  cursor: none;
+}
+
+#start-overlay,
+#menu-overlay,
+.start-card,
+.menu-card,
+button,
+input,
+label {
+  cursor: default;
+}
+
+button,
+input[type="range"],
+input[type="radio"],
+input[type="checkbox"],
+.menu-radio-group label,
+.checkbox-row {
+  cursor: pointer;
+}
+
+#game {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: block;
+}
+
+.hud {
+  position: fixed;
+  top: 22px;
+  left: 32px;
+  z-index: 10;
+  user-select: none;
+  pointer-events: none;
+}
+
+#score {
+  font-family: "Rye", "Georgia", serif;
+  font-size: 30px;
+  letter-spacing: 4px;
+  color: #f4ead4;
+  text-shadow: 2px 2px 0 #1a0e06, 4px 4px 10px rgba(0, 0, 0, 0.6);
+}
+
+#status {
+  font-family: "IM Fell English", "Georgia", serif;
+  font-size: 14px;
+  margin-top: 6px;
+  color: #d6bd92;
+  letter-spacing: 1px;
+  font-style: italic;
+}
+
+#menu-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #5a3a22;
+  color: #f4ead4;
+  font-family: "Rye", "Georgia", serif;
+  font-size: 12px;
+  letter-spacing: 3px;
+  border: 2px solid #2b1d10;
+  padding: 10px 18px;
+  z-index: 50;
+  box-shadow: 3px 3px 0 #1a0e06;
+  display: none;
+  transition: transform 0.08s;
+}
+
+#menu-btn.visible {
+  display: block;
+}
+
+#menu-btn:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1a0e06;
+}
+
+#menu-btn:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1a0e06;
+}
+
+#debug-panel {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: rgba(20, 12, 6, 0.88);
+  border: 2px solid #5a3a22;
+  border-radius: 3px;
+  padding: 10px 14px 12px;
+  font-family: "IM Fell English", "Georgia", serif;
+  font-size: 12px;
+  color: #f4ead4;
+  z-index: 20;
+  min-width: 210px;
+  pointer-events: none;
+  box-shadow: 3px 3px 0 #1a0e06;
+}
+
+#debug-panel.hidden {
+  display: none;
+}
+
+.debug-title {
+  font-family: "Rye", "Georgia", serif;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #d4a55a;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #5a3a22;
+  padding-bottom: 4px;
+  text-align: center;
+}
+
+.debug-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  margin: 2px 0;
+}
+
+.debug-row span:first-child {
+  color: #c8b08a;
+  letter-spacing: 1px;
+}
+
+.debug-row span:last-child {
+  font-style: italic;
+  color: #f4d058;
+  font-variant-numeric: tabular-nums;
+  min-width: 70px;
+  text-align: right;
+}
+
+.debug-row.active span:last-child {
+  color: #7fff7f;
+}
+
+.webcam-wrapper {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 240px;
+  height: 180px;
+  border: 5px solid #5a3a22;
+  border-radius: 3px;
+  overflow: hidden;
+  background: #000;
+  z-index: 10;
+  box-shadow: 0 0 0 2px #2b1d10, 4px 4px 0 #1a0e06,
+    0 8px 18px rgba(0, 0, 0, 0.6);
+}
+
+#webcam {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1);
+  filter: sepia(0.25) saturate(0.85) contrast(1.05);
+}
+
+#webcam-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.webcam-label {
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  font-family: "Rye", "Georgia", serif;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: #f4ead4;
+  text-shadow: 1px 1px 0 #1a0e06;
+}
+
+#start-overlay,
+#menu-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 12, 6, 0.82);
+  backdrop-filter: blur(3px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#menu-overlay.hidden,
+#start-overlay.hidden {
+  display: none;
+}
+
+.start-card,
+.menu-card {
+  position: relative;
+  background: #d9c4a0;
+  color: #2b1d10;
+  border: 4px double #5a3a22;
+  border-radius: 3px;
+  padding: 36px 56px;
+  text-align: center;
+  box-shadow: 6px 6px 0 #1a0e06, 0 0 80px rgba(0, 0, 0, 0.5);
+  max-width: 540px;
+}
+
+.start-card::before,
+.menu-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+      ellipse at top left,
+      rgba(0, 0, 0, 0.08),
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(0, 0, 0, 0.12),
+      transparent 60%
+    );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+.start-card h1 {
+  font-family: "Rye", "Georgia", serif;
+  font-size: 54px;
+  letter-spacing: 4px;
+  color: #5a1a0a;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.18);
+  margin-bottom: 12px;
+}
+
+.tagline {
+  font-style: italic;
+  color: #5a3a22;
+  margin-bottom: 22px;
+  font-size: 17px;
+}
+
+.instructions {
+  color: #2b1d10;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  font-size: 16px;
+}
+
+.instructions strong {
+  color: #5a1a0a;
+}
+
+#start-btn {
+  background: #5a1a0a;
+  color: #f4ead4;
+  font-family: "Rye", "Georgia", serif;
+  font-size: 22px;
+  letter-spacing: 6px;
+  border: 3px solid #2b1d10;
+  padding: 14px 56px;
+  box-shadow: 4px 4px 0 #1a0e06;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+#start-btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 #1a0e06;
+}
+
+#start-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 #1a0e06;
+}
+
+#start-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.menu-card {
+  text-align: left;
+  min-width: 480px;
+  position: relative;
+}
+
+.menu-card h2 {
+  font-family: "Rye", "Georgia", serif;
+  font-size: 34px;
+  letter-spacing: 6px;
+  color: #5a1a0a;
+  text-align: center;
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #5a3a22;
+}
+
+.menu-row {
+  margin-bottom: 18px;
+  position: relative;
+  z-index: 1;
+}
+
+.menu-row-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "Rye", "Georgia", serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: #2b1d10;
+  margin-bottom: 8px;
+}
+
+.value-display {
+  font-family: "IM Fell English", "Georgia", serif;
+  font-size: 17px;
+  font-style: italic;
+  color: #5a1a0a;
+  letter-spacing: 0;
+}
+
+.menu-radio-group {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.menu-radio-group label {
+  font-family: "IM Fell English", "Georgia", serif;
+  font-size: 17px;
+  color: #2b1d10;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: "IM Fell English", "Georgia", serif;
+  font-size: 17px;
+  color: #2b1d10;
+}
+
+input[type="range"] {
+  width: 100%;
+  appearance: none;
+  background: #5a3a22;
+  height: 6px;
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: #5a1a0a;
+  border: 2px solid #f4ead4;
+  border-radius: 50%;
+  box-shadow: 1px 1px 0 #000;
+}
+
+input[type="range"]::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: #5a1a0a;
+  border: 2px solid #f4ead4;
+  border-radius: 50%;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+  accent-color: #5a1a0a;
+  width: 16px;
+  height: 16px;
+}
+
+.menu-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+}
+
+.menu-actions button {
+  background: #5a1a0a;
+  color: #f4ead4;
+  font-family: "Rye", "Georgia", serif;
+  font-size: 14px;
+  letter-spacing: 3px;
+  border: 2px solid #2b1d10;
+  padding: 10px 26px;
+  box-shadow: 3px 3px 0 #1a0e06;
+  transition: transform 0.08s, box-shadow 0.08s;
+}
+
+.menu-actions button.secondary {
+  background: transparent;
+  color: #5a1a0a;
+}
+
+.menu-actions button:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0 #1a0e06;
+}
+
+.menu-actions button:active {
+  transform: translate(1px, 1px);
+  box-shadow: 1px 1px 0 #1a0e06;
+}
+
+/* Narrow screens: stop the fixed-width cards from overflowing horizontally. */
+@media (max-width: 560px) {
+  .start-card,
+  .menu-card {
+    padding: 24px 22px;
+    max-width: 94vw;
+  }
+  .menu-card {
+    min-width: 0;
+    width: 94vw;
+  }
+  .start-card h1 {
+    font-size: 38px;
+  }
+  .menu-card h2 {
+    font-size: 26px;
+    letter-spacing: 4px;
+  }
+  .webcam-wrapper {
+    width: 150px;
+    height: 112px;
+  }
+}
+
+/* Respect users who ask for reduced motion: drop the button nudge/shadow
+   animations. (Canvas dust/vultures are part of the gameplay scene.) */
+@media (prefers-reduced-motion: reduce) {
+  #menu-btn,
+  #start-btn,
+  .menu-actions button {
+    transition: none;
+  }
+  #menu-btn:hover,
+  #menu-btn:active,
+  #start-btn:hover,
+  #start-btn:active,
+  .menu-actions button:hover,
+  .menu-actions button:active {
+    transform: none;
+  }
+}
+
+/* v2: calibration / trigger-test prompts */
+#coach {
+  position: fixed;
+  top: 18%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  text-align: center;
+  background: rgba(20, 12, 6, 0.86);
+  border: 3px double #5a3a22;
+  border-radius: 3px;
+  padding: 18px 34px 22px;
+  max-width: min(720px, 92vw);
+  box-shadow: 5px 5px 0 #1a0e06;
+  pointer-events: none;
+}
+
+#coach.hidden {
+  display: none;
+}
+
+#coach-title {
+  font-family: "Rye", "Georgia", serif;
+  font-size: 20px;
+  letter-spacing: 4px;
+  color: #d4a55a;
+  margin-bottom: 8px;
+}
+
+#coach-text {
+  font-size: 18px;
+  color: #f4ead4;
+  line-height: 1.4;
+}
+
+#coach-big {
+  font-family: "Rye", "Georgia", serif;
+  font-size: 46px;
+  color: #f4ead4;
+  margin-top: 8px;
+  min-height: 52px;
+}
+
+#coach-big.fire {
+  color: #ff6a3a;
+  font-size: 64px;
+}
+
+.menu-actions + .menu-actions {
+  margin-top: 12px;
+}
