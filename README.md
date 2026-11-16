@@ -6,7 +6,7 @@ A browser-based gesture-controlled shooter with a dusty Western theme. Make a pi
 
 - **MediaPipe Tasks Vision** (HandLandmarker) — 21-landmark hand tracking, loaded from CDN
 - **Canvas 2D** — game rendering + hand skeleton overlay
-- **Web Audio API** — synthesized cap-gun / metal-ting / dust-thud SFX
+- **Web Audio API** — synthesised cap-gun / metal-ting / dust-thud SFX
 - Plain ES modules — no build step
 
 ## Run it
@@ -57,11 +57,11 @@ The previous version made decisions from a few hand-picked landmark distances. T
 
 1. **All 21 MediaPipe landmarks** are smoothed individually with a per-axis **One-Euro filter** (`handModel.js`). One-Euro is the standard adaptive low-pass for noisy real-time signals — it keeps slow motion stable while staying responsive to fast moves.
 2. **Per-finger biomechanical curl** is computed from the angles at the PIP and DIP joints (`fingerCurl()`). The metric is `(π − pipAngle) + (π − dipAngle)` and is rotation- and translation-invariant. Range: ~0 (straight) to ~3.0 (fully curled).
-3. **Hand scale** — distance between INDEX_MCP and PINKY_MCP — is used to normalize other distances so thresholds work regardless of how close the hand is to the camera.
+3. **Hand scale** — distance between INDEX_MCP and PINKY_MCP — is used to normalise other distances so thresholds work regardless of how close the hand is to the camera.
 4. **Palm normal** is the cross-product of two palm-spanning vectors. Available for future features (orientation-based aim, recoil-recovery detection, etc.).
 5. **Trigger uses two independent signals**, plus their velocity:
    - Thumb angle vs. index direction (`thumb.angle`)
-   - Thumb-tip-to-INDEX_MCP distance, normalized by palm width (`thumb.foldRatio`)
+   - Thumb-tip-to-INDEX_MCP distance, normalised by palm width (`thumb.foldRatio`)
    Fires on the rising edge of "pressed", which is true when *either* signal crosses its absolute threshold **or** is dropping fast toward the pressed region — so a snappy trigger flick that never quite reaches the static threshold still registers. Re-arms when either signal returns past its release threshold. All thresholds scale with the **Trigger Sensitivity** setting.
 
 Toggle **Show Hand Sensor Readout** in the menu to see all of the above values live, plus pose state and trigger arming, while you play.
@@ -86,7 +86,7 @@ Settings persist via `localStorage` between sessions.
 |---|---|
 | `index.html` | DOM scaffolding: canvas, webcam, start screen, settings menu, debug panel |
 | `styles.css` | Western/saloon styling + debug panel + menu |
-| `main.js` | MediaPipe init, camera setup, render loop, color-coded skeleton overlay, debug panel updates |
+| `main.js` | MediaPipe init, camera setup, render loop, colour-coded skeleton overlay, debug panel updates |
 | `handModel.js` | One-Euro filter, biomechanical curl/angle math, hand state assembly |
 | `pistol.js` | Pose detection, two-signal thumb-down trigger, aim-point mapping (uses `handModel.js`) |
 | `game.js` | Tin-can spawning/movement, hit detection, aim assist (snap/pull/off), drawing background + cans + crosshair |
@@ -108,5 +108,5 @@ Most feel knobs live at the top of their respective files:
 - Round timer + high-score table
 - Combo multiplier for consecutive hits
 - A wider variety of targets (bottles, sheriff stars, swinging saloon doors)
-- Per-player calibration step that records "neutral pistol pose" and "thumb fully pressed" to set personalized thresholds
+- Per-player calibration step that records "neutral pistol pose" and "thumb fully pressed" to set personalised thresholds
 - Two-handed mode (akimbo)
